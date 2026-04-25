@@ -1,0 +1,3 @@
+dbt_shopify/target/
+dbt_shopify/logs/
+dbt_shopify/.user.yml
