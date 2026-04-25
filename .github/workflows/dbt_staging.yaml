@@ -1,0 +1,43 @@
+name: dbt staging checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  dbt-staging:
+    runs-on: ubuntu-latest
+
+    env:
+      DBT_PROFILES_DIR: ./dbt_shopify
+      DBT_STAGING_HOST: ${{ secrets.DBT_STAGING_HOST }}
+      DBT_STAGING_USER: ${{ secrets.DBT_STAGING_USER }}
+      DBT_STAGING_PASSWORD: ${{ secrets.DBT_STAGING_PASSWORD }}
+      DBT_STAGING_DB: ${{ secrets.DBT_STAGING_DB }}
+      DBT_STAGING_PORT: ${{ secrets.DBT_STAGING_PORT }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dbt
+        run: pip install dbt-postgres
+
+      - name: Install dbt packages
+        working-directory: dbt_shopify
+        run: dbt deps
+
+      - name: Compile dbt project
+        working-directory: dbt_shopify
+        run: dbt compile --target staging
+
+      - name: Build and test dbt project
+        working-directory: dbt_shopify
+        run: dbt build --target staging

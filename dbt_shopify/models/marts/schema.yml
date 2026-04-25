@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: fct_order_summary
+    description: >
+      Order-level mart with one row per Shopify order. This model combines
+      order attributes, customer identifiers, and aggregated line-item metrics.
+      Grain: one row per order_id.
+    columns:
+      - name: order_id
+        description: Primary order identifier from Shopify. Defines the grain of the model.
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: Customer identifier extracted from the nested CUSTOMER object on the order.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+      - name: order_created_at
+        description: Timestamp when the order was created.
+        tests:
+          - not_null
+
+      - name: financial_status
+        description: Shopify financial status for the order.
+
+      - name: fulfillment_status
+        description: Shopify fulfillment status for the order.
+
+      - name: total_price
+        description: Total order amount from Shopify.
+        tests:
+          - not_null
+
+      - name: line_item_count
+        description: Count of deduplicated line items associated with the order.
+        tests:
+          - not_null
+
+      - name: total_quantity
+        description: Total quantity across deduplicated order line items.
+
+      - name: calculated_line_item_amount
+        description: Sum of quantity multiplied by unit price across deduplicated line items.
+  - name: dim_customers
+    description: Customer dimension with one row per customer_id.
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_products
+    description: Product dimension with one row per product_id.
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique

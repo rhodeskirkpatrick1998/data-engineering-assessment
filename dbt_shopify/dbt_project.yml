@@ -1,0 +1,19 @@
+name: shopify_assessment
+version: '1.0.0'
+config-version: 2
+
+profile: shopify_assessment
+
+model-paths: ["models"]
+
+models:
+  shopify_assessment:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table

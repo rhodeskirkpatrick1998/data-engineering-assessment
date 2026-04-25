@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: >
+      Cleaned order-level staging model sourced from raw.orders.
+      Grain: one row per Shopify order, identified by order_id.
+    columns:
+      - name: order_id
+        description: Primary Shopify order identifier.
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: Customer identifier extracted from the nested CUSTOMER object on the order.
+        tests:
+          - not_null
+
+  - name: stg_order_line_items
+    description: >
+      Flattened order line-item staging model sourced from the LINE_ITEMS array
+      in stg_orders. Grain: one row per order line item, identified by line_item_id.
+    columns:
+      - name: order_id
+        description: Shopify order identifier associated with the line item.
+        tests:
+          - not_null
+
+      - name: line_item_id
+        description: Primary line-item identifier from the nested LINE_ITEMS array.
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_customers
+    description: >
+      Cleaned customer staging model sourced from raw.customers.
+      Grain: one row per Shopify customer, identified by customer_id.
+    columns:
+      - name: customer_id
+        description: Primary Shopify customer identifier.
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_products
+    description: >
+      Cleaned product staging model sourced from raw.products.
+      Grain: one row per Shopify product, identified by product_id.
+    columns:
+      - name: product_id
+        description: Primary Shopify product identifier.
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_product_variants
+    description: >
+      Flattened product variant staging model sourced from the VARIANTS array
+      in stg_products. Grain: one row per product variant, identified by variant_id.
+    columns:
+      - name: product_id
+        description: Shopify product identifier associated with the variant.
+        tests:
+          - not_null
+
+      - name: variant_id
+        description: Primary Shopify variant identifier.
+        tests:
+          - not_null
+          - unique

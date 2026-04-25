@@ -1,0 +1,38 @@
+name: dbt production scheduled run
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  dbt-prod:
+    runs-on: ubuntu-latest
+
+    env:
+      DBT_PROFILES_DIR: ./dbt_shopify
+      DBT_PROD_HOST: ${{ secrets.DBT_PROD_HOST }}
+      DBT_PROD_USER: ${{ secrets.DBT_PROD_USER }}
+      DBT_PROD_PASSWORD: ${{ secrets.DBT_PROD_PASSWORD }}
+      DBT_PROD_DB: ${{ secrets.DBT_PROD_DB }}
+      DBT_PROD_PORT: ${{ secrets.DBT_PROD_PORT }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dbt
+        run: pip install dbt-postgres
+
+      - name: Install dbt packages
+        working-directory: dbt_shopify
+        run: dbt deps
+
+      - name: Build and test production dbt project
+        working-directory: dbt_shopify
+        run: dbt build --target prod

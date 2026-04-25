@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: raw_shopify
+    description: Raw Shopify data ingested via Airbyte into Postgres
+    schema: raw
+    tables:
+      - name: orders
+        loaded_at_field: _airbyte_extracted_at
+        description: Raw orders data from Shopify JSONL
+
+      - name: customers
+        loaded_at_field: _airbyte_extracted_at
+        description: Raw customers data from Shopify JSONL
+
+      - name: products
+        loaded_at_field: _airbyte_extracted_at
+        description: Raw products data from Shopify JSONL
