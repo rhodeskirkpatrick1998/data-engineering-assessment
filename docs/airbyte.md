@@ -54,7 +54,7 @@ Credentials retrieved via:
 
 The dataset consists of three Shopify-style JSONL files:
 
-DATA/
+DATA/<br>
 ├── portable_shopify.orders.sample.jsonl<br>
 ├── portable_shopify.customers.sample.jsonl<br>
 ├── portable_shopify.products.sample.jsonl<br>

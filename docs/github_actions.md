@@ -11,7 +11,6 @@ Two workflows are implemented:
 
 ## Workflow Files
 
-```text
 .github/workflows/dbt_staging.yml
 .github/workflows/dbt_prod_scheduled.yml
 ________________________________________
